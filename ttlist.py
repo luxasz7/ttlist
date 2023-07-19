@@ -88,21 +88,21 @@ def add_Tarefa_W():
 
     while tarefa != "done":
         tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() #+ "\n"
+        add_Tarefa(["add",tarefa])
+        # while (tarefa == "add" or tarefa == "remove" or tarefa == "check" or tarefa == "exit" or tarefa == "ls" or tarefa == "clear") or len(tarefa.split()) > 1 or len(tarefa) >= 35:
+        #     print(f"{Fore.RED}\n{tarefa.strip()} é um valor invalido. Digite outro nome para a tarefa. {Style.RESET_ALL}\n")
+        #     tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() #+ "\n"
 
-        while (tarefa == "add" or tarefa == "remove" or tarefa == "check" or tarefa == "exit" or tarefa == "ls" or tarefa == "clear") or len(tarefa.split()) > 1 or len(tarefa) >= 35:
-            print(f"{Fore.RED}\n{tarefa.strip()} é um valor invalido. Digite outro nome para a tarefa. {Style.RESET_ALL}\n")
-            tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() #+ "\n"
-
-        if tarefa in tarefas:
-            print(f"\n{Fore.RED}{tarefa.strip()} já existe em sua lista. {Style.RESET_ALL}\n")
-        elif tarefa == "done":
-             break
-        else:
-            date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
-            tarefas[tarefa] = date
-    adicionar_Tarefa(tarefas)
+        # if tarefa in tarefas:
+        #     print(f"\n{Fore.RED}{tarefa.strip()} já existe em sua lista. {Style.RESET_ALL}\n")
+        # elif tarefa == "done":
+        #      break
+        # else:
+        #     date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
+        #     tarefas[tarefa] = date
+    #adicionar_Tarefa(tarefas)
     # adicionar_Tarefa(datas, "data.txt")
-    exibir_Lista(tarefas, False)
+    #exibir_Lista(tarefas, False)
 #######
 
 
@@ -114,6 +114,8 @@ def remove_Tarefa(comando):
     for i in range(len(task)):
         if (task[i]) in tarefas:
             del tarefas[task[i]]
+        elif task[i] == "done":
+            continue 
         else:
             print(f"{Fore.RED}{task[i]} não está presente na lista de tarefas. Impossível remover. {Style.RESET_ALL}")
     adicionar_Tarefa(tarefas)
@@ -123,14 +125,15 @@ def remove_Tarefa_W():
     tarefa = ""
     while tarefa != "done":
         tarefa = input(f"{Back.RED} Digite a tarefa que deseja remover:{Style.RESET_ALL} {Fore.RED}").lower()
-        if tarefa in tarefas:
-            del tarefas[tarefa]
-        elif tarefa == "done":
-            break
-        else:
-            print(f"\n{Fore.RED}{tarefa.strip()} não está em sua lista. Impossível remover.{Style.RESET_ALL}")
-    adicionar_Tarefa(tarefas)
-    exibir_Lista(tarefas, False)
+        remove_Tarefa(["remove",tarefa])
+    #     if tarefa in tarefas:
+    #         del tarefas[tarefa]
+    #     elif tarefa == "done":
+    #         break
+    #     else:
+    #         print(f"\n{Fore.RED}{tarefa.strip()} não está em sua lista. Impossível remover.{Style.RESET_ALL}")
+    # adicionar_Tarefa(tarefas)
+    # exibir_Lista(tarefas, False)
 ######
 
 def exibir_Lista(tarefas, x):
