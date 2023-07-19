@@ -2,37 +2,34 @@ from datetime import datetime
 import colorama
 from colorama import init, Fore, Back, Style
 colorama.init(autoreset=True)
-
+import json
 import subprocess
 import platform
 
-arquivo = open('arquivo.txt','r')
-arquivo_Tam = len(arquivo.readlines())
-arquivo.close()
+# arquivo = open('arquivo.txt','r')
+# arquivo_Tam = len(arquivo.readlines())
+# arquivo.close()
+
+with open('arquivo.json','r') as arquivo:
+    arquivo = json.load(arquivo)
 
 c = ""
-tarefas = []
-datas = []
+tarefas = arquivo
+#datas = []
 
-def preencher_Tarefas_Arquivo(x, arquivo_Tam, y):
-    arquivo = open(y,'r')
-    for i in range(arquivo_Tam):
-        valor = arquivo.readline()
-        x.append(valor)
-    arquivo.close()
+# def preencher_Tarefas_Arquivo(x, arquivo_Tam, y):
+#     arquivo = open(y,'r')
+#     for i in range(arquivo_Tam):
+#         valor = arquivo.readline()
+#         x.append(valor)
+#     arquivo.close()
 
-def adicionar_Tarefa(x, y):
-    arquivo = open(y,'w')
-    arquivo.write("")
-    arquivo.close()
+def adicionar_Tarefa(tarefas):    
+    with open('arquivo.json','w') as arquivo:
+        json.dump(tarefas, arquivo)
 
-    arquivo = open(y,'a')
-    for i in range(len(x)):
-        arquivo.write(x[i])
-    arquivo.close()
-
-preencher_Tarefas_Arquivo(tarefas, arquivo_Tam, "arquivo.txt")
-preencher_Tarefas_Arquivo(datas, arquivo_Tam, "data.txt")
+# preencher_Tarefas_Arquivo(tarefas, arquivo_Tam, "arquivo.txt")
+# preencher_Tarefas_Arquivo(datas, arquivo_Tam, "data.txt")
 
 def exec_Comando(c):
     comando = c.split()
@@ -55,7 +52,7 @@ def exec_Comando(c):
         case "check":
                 print("check")
         case "help":
-            print("-------\nadd - Adiciona uma nova terafa\nremove - Remove um tarefa\ncheck - Marca uma tarefa com concluída\nls - Lista as terafas\n-------")
+            print(f"{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}add - Adiciona uma nova terafa\nremove - Remove um tarefa\ncheck - Marca uma tarefa com concluída\nls - Lista as terafas\nls -h - Lista as tarefas exibindo seu horário de criação{Style.RESET_ALL}\n{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}")
         case "exit":
             print(f"{Back.LIGHTMAGENTA_EX}Saindo...")
         case "ls":
@@ -77,36 +74,34 @@ def add_Tarefa(comando):
     for i in range(len(task)):
         if task[i] == "add" or task[i] == "remove" or task[i] == "check" or task[i] == "exit" or task[i] == "done" or task[i] == "ls" or task[i] == "done" or task[i] == "clear": 
             print(Fore.RED + f"{task[i]} é um valor invalido.")
-        elif task[i]+"\n" in tarefas:
+        elif task[i] in tarefas:
             print(Fore.RED + f"{task[i]} já existe na lista impossível adicionar.")
         else:   
-            tarefas.append(task[i]+"\n")
-            date = datetime.now()
-            datas.append(date.strftime("%Y-%m-%d %H:%M\n"))
-    adicionar_Tarefa(tarefas, "arquivo.txt")
-    adicionar_Tarefa(datas, "data.txt")
+            tarefa = task[i]
+            date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
+            tarefas[tarefa] = date
+    adicionar_Tarefa(tarefas)
     exibir_Lista(tarefas, False)
 
 def add_Tarefa_W():
     tarefa = ""
 
-    while tarefa != "done\n":
-        tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() + "\n"
+    while tarefa != "done":
+        tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() #+ "\n"
 
-        while (tarefa == "add\n" or tarefa == "remove\n" or tarefa == "check\n" or tarefa == "exit\n" or tarefa == "ls\n" or tarefa == "clear\n") or len(tarefa.split()) > 1 or len(tarefa) >= 35:
+        while (tarefa == "add" or tarefa == "remove" or tarefa == "check" or tarefa == "exit" or tarefa == "ls" or tarefa == "clear") or len(tarefa.split()) > 1 or len(tarefa) >= 35:
             print(f"{Fore.RED}\n{tarefa.strip()} é um valor invalido. Digite outro nome para a tarefa. {Style.RESET_ALL}\n")
-            tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() + "\n"
+            tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() #+ "\n"
 
         if tarefa in tarefas:
             print(f"\n{Fore.RED}{tarefa.strip()} já existe em sua lista. {Style.RESET_ALL}\n")
-        elif tarefa == "done\n":
+        elif tarefa == "done":
              break
         else:
-            tarefas.append(tarefa)
-            date = datetime.now()
-            datas.append(date.strftime("%Y-%m-%d %H:%M\n"))
-    adicionar_Tarefa(tarefas, "arquivo.txt")
-    adicionar_Tarefa(datas, "data.txt")
+            date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
+            tarefas[tarefa] = date
+    adicionar_Tarefa(tarefas)
+    # adicionar_Tarefa(datas, "data.txt")
     exibir_Lista(tarefas, False)
 #######
 
@@ -117,36 +112,31 @@ def remove_Tarefa(comando):
     task.remove(comando[0])
 
     for i in range(len(task)):
-        if (task[i]+"\n") in tarefas:
-            tarefas.remove(task[i]+"\n")
-            datas.remove(datas[i])
+        if (task[i]) in tarefas:
+            del tarefas[task[i]]
         else:
             print(f"{Fore.RED}{task[i]} não está presente na lista de tarefas. Impossível remover. {Style.RESET_ALL}")
-    adicionar_Tarefa(tarefas, "arquivo.txt")
-    adicionar_Tarefa(datas, "data.txt")
+    adicionar_Tarefa(tarefas)
     exibir_Lista(tarefas, False)
 
 def remove_Tarefa_W():
     tarefa = ""
-    while tarefa != "done\n":
-        tarefa = input(f"{Back.RED} Digite a tarefa que deseja remover:{Style.RESET_ALL} {Fore.RED}").lower() + "\n"
+    while tarefa != "done":
+        tarefa = input(f"{Back.RED} Digite a tarefa que deseja remover:{Style.RESET_ALL} {Fore.RED}").lower()
         if tarefa in tarefas:
-            date = datas[tarefas.index(tarefa)]
-            tarefas.remove(tarefa)
-            datas.remove(date)
-        elif tarefa == "done\n":
+            del tarefas[tarefa]
+        elif tarefa == "done":
             break
         else:
             print(f"\n{Fore.RED}{tarefa.strip()} não está em sua lista. Impossível remover.{Style.RESET_ALL}")
-    adicionar_Tarefa(tarefas, "arquivo.txt")
-    adicionar_Tarefa(datas, "data.txt")
+    adicionar_Tarefa(tarefas)
     exibir_Lista(tarefas, False)
 ######
 
 def exibir_Lista(tarefas, x):
     print("\n")
-    for i in range(len(tarefas)):
-        print(f"{Style.BRIGHT + Fore.MAGENTA + tarefas[i].strip() + Style.RESET_ALL}{Style.BRIGHT + Fore.YELLOW + gerar_Pontos(tarefas[i]) + Style.RESET_ALL}{Style.BRIGHT+ Fore.BLUE + formatar_Data(x,i) + Style.RESET_ALL}", end ="")
+    for chave, valor in tarefas.items():
+        print(f"{Style.BRIGHT + Fore.MAGENTA + chave.strip() + Style.RESET_ALL}{Style.BRIGHT + Fore.YELLOW + gerar_Pontos(chave) + Style.RESET_ALL}{Style.BRIGHT+ Fore.BLUE + formatar_Data(x, valor) + Style.RESET_ALL}", end="")
     print("\n")
 
 def clear_Terminal():
@@ -155,11 +145,11 @@ def clear_Terminal():
     elif platform.system() == 'Windows':
         subprocess.call('cls', shell=True)
 
-def formatar_Data(x,i):
+def formatar_Data(x,valor):
     if x:
-        return datas[i][0:16] + "\n"
+        return valor[0:16] + "\n"
     else: 
-        return datas[i][0:10] + "\n"
+        return valor[0:10] + "\n"
 
 def gerar_Pontos(x):
     y = 40 - len(x)
