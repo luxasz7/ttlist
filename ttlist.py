@@ -52,7 +52,7 @@ def exec_Comando(c):
         case "check":
                 print("check")
         case "help":
-            print(f"{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}add - Adiciona uma nova terafa\nremove - Remove um tarefa\ncheck - Marca uma tarefa com concluída\nls - Lista as terafas\nls -h - Lista as tarefas exibindo seu horário de criação{Style.RESET_ALL}\n{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}")
+            print(f"{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}add - Adiciona uma nova terafa{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}remove - Remove um tarefa{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}check - Marca uma tarefa com concluída{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}ls - Lista as terafas{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}ls -h - Lista as tarefas exibindo seu horário de criação{Style.RESET_ALL}\n{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}")
         case "exit":
             print(f"{Back.LIGHTMAGENTA_EX}Saindo...")
         case "ls":
@@ -61,11 +61,18 @@ def exec_Comando(c):
             elif len(comando) == 2 and comando[1] == "-h":
                 exibir_Lista(tarefas,True)
             else:
-                print(f"{Fore.RED}Comando invalido")
+                print(f"{Fore.RED}Comando invalido.")
         case "clear":
             clear_Terminal()
+        case "edit":
+            if len(comando) == 1:
+                editar_Tarefa(tarefas, "Null")
+            elif len(comando) == 2:
+                editar_Tarefa(tarefas,comando[1])
+            elif len(comando) > 2:
+                print(f"{Fore.RED}Comando invalido. Você só pode editar um item por vez.")
         case other:
-            print(Fore.RED + "\nComando inválido, digite \"help\" para ver a lista de comandos\n")
+            print(Fore.RED + "Comando inválido, digite \"help\" para ver a lista de comandos\n")
 ###ADD###
 def add_Tarefa(comando):
     task = comando
@@ -137,10 +144,28 @@ def remove_Tarefa_W():
 ######
 
 def exibir_Lista(tarefas, x):
-    print("\n")
     for chave, valor in tarefas.items():
-        print(f"{Style.BRIGHT + Fore.MAGENTA + chave.strip() + Style.RESET_ALL}{Style.BRIGHT + Fore.YELLOW + gerar_Pontos(chave) + Style.RESET_ALL}{Style.BRIGHT+ Fore.BLUE + formatar_Data(x, valor) + Style.RESET_ALL}", end="")
-    print("\n")
+        print(f"{Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL}{Style.BRIGHT + Fore.YELLOW + gerar_Pontos(chave) + Style.RESET_ALL}{Style.BRIGHT+ Fore.BLUE + formatar_Data(x, valor) + Style.RESET_ALL}", end="")
+
+def editar_Tarefa(tarefas,t ):
+    exibir_Lista(tarefas, True)
+
+    if t == "Null":
+            tarefa = input(f"{Back.GREEN}Digite a tarefa que deseja editar:{Style.RESET_ALL} {Fore.GREEN}").lower()
+    else:
+        tarefa = t
+
+    if tarefa in tarefas:
+        new_Tarefa = input(f"{Back.GREEN}Digite as alterações:{Style.RESET_ALL} {Fore.GREEN}").lower()
+        date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
+        tarefas[new_Tarefa] = date
+
+        del tarefas[tarefa]
+        adicionar_Tarefa(tarefas)
+        exibir_Lista(tarefas, False)
+    else:
+        print(f"{Fore.RED}{tarefa} não está presente na lista de tarefas. Impossível Editar. {Style.RESET_ALL}")
+    
 
 def clear_Terminal():
     if platform.system() == 'Linux' or platform.system() == 'Darwin':
@@ -164,5 +189,5 @@ def gerar_Pontos(x):
 while(c != "exit"):
     print(f"{Back.GREEN}{Style.BRIGHT}TTLIST: ")
     c = input(Fore.GREEN + ">").lower()
-    print(Style.RESET_ALL)
+    Style.RESET_ALL
     exec_Comando(c)
