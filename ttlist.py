@@ -153,7 +153,15 @@ def remove_Tarefa_W():
 
 def exibir_Lista(tarefas, x):
     for chave, valor in tarefas.items():
-        print(f"{Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL}{Style.BRIGHT + Fore.YELLOW + gerar_Pontos(chave) + Style.RESET_ALL}{Style.BRIGHT+ Fore.BLUE + formatar_Data(x, valor[0]) + Style.RESET_ALL}", end="")
+        if valor[1]:
+            chave = Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL
+            pontos = Style.BRIGHT + Fore.YELLOW + gerar_Pontos(chave) + Style.RESET_ALL
+            data = Style.BRIGHT+ Fore.BLUE + formatar_Data(x, valor[0]) + Style.RESET_ALL
+        elif not valor[1]:
+            chave = Style.BRIGHT + Fore.BLACK + chave + Style.RESET_ALL
+            pontos = Style.BRIGHT + Fore.BLACK + gerar_Pontos(chave) + Style.RESET_ALL
+            data = Style.BRIGHT+ Fore.BLACK + formatar_Data(x, valor[0]) + Style.RESET_ALL
+        print(f"{chave}{pontos}{data}", end="")
 
 def editar_Tarefa(tarefas,t ):
     exibir_Lista(tarefas, True)
