@@ -50,7 +50,15 @@ def exec_Comando(c):
             else:
                 remove_Tarefa(comando)
         case "check":
-                print("check")
+                if len(comando) == 1:
+                    checked_Tarefa_W(comando)
+                elif len(comando) > 0:
+                    checked_Tarefa(comando)
+        case "uncheck":
+            if len(comando) == 1:
+                unchecked_Tarefa_W(comando)
+            elif len(comando) > 0:
+                unchecked_Tarefa(comando)
         case "help":
             print(f"{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}add - Adiciona uma nova terafa{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}remove - Remove um tarefa{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}check - Marca uma tarefa com concluída{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}ls - Lista as terafas{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}ls -h - Lista as tarefas exibindo seu horário de criação{Style.RESET_ALL}\n{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}")
         case "exit":
@@ -86,7 +94,7 @@ def add_Tarefa(comando):
         else:   
             tarefa = task[i]
             date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
-            tarefas[tarefa] = date
+            tarefas[tarefa] = [date,True]
     adicionar_Tarefa(tarefas)
     exibir_Lista(tarefas, False)
 
@@ -145,7 +153,7 @@ def remove_Tarefa_W():
 
 def exibir_Lista(tarefas, x):
     for chave, valor in tarefas.items():
-        print(f"{Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL}{Style.BRIGHT + Fore.YELLOW + gerar_Pontos(chave) + Style.RESET_ALL}{Style.BRIGHT+ Fore.BLUE + formatar_Data(x, valor) + Style.RESET_ALL}", end="")
+        print(f"{Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL}{Style.BRIGHT + Fore.YELLOW + gerar_Pontos(chave) + Style.RESET_ALL}{Style.BRIGHT+ Fore.BLUE + formatar_Data(x, valor[0]) + Style.RESET_ALL}", end="")
 
 def editar_Tarefa(tarefas,t ):
     exibir_Lista(tarefas, True)
@@ -158,14 +166,51 @@ def editar_Tarefa(tarefas,t ):
     if tarefa in tarefas:
         new_Tarefa = input(f"{Back.GREEN}Digite as alterações:{Style.RESET_ALL} {Fore.GREEN}").lower()
         date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
-        tarefas[new_Tarefa] = date
+        tarefas[new_Tarefa] = [date,True]
 
         del tarefas[tarefa]
         adicionar_Tarefa(tarefas)
         exibir_Lista(tarefas, False)
     else:
-        print(f"{Fore.RED}{tarefa} não está presente na lista de tarefas. Impossível Editar. {Style.RESET_ALL}")
+        print(f"{Fore.RED}{tarefa} não está presente na lista de tarefas. Impossível Editar.{Style.RESET_ALL}")
     
+def checked_Tarefa(comando):
+    task = comando
+    task.remove(comando[0])
+    for i in range(len(task)):
+        if task[i] in tarefas:
+            date = tarefas[task[i]][0]
+            tarefas[task[i]] = [date, False]
+            adicionar_Tarefa(tarefas)
+        else:
+            print(f"{Fore.RED}{task[i]} não está presente na lista de tarefas. Impossível marcar como concluido. {Style.RESET_ALL}")
+    exibir_Lista(tarefas, False)
+
+def checked_Tarefa_W(comando):
+    tarefa = ""
+    while tarefa != "done":
+        tarefa = input(f"{Back.GREEN}Digite a tarefa que deseja marcar como concluida:{Style.RESET_ALL} {Fore.GREEN}").lower()
+        if tarefa == "done":
+            break
+        checked_Tarefa(["check",tarefa])
+
+def unchecked_Tarefa(comando):
+    task = comando
+    task.remove(comando[0])
+    for i in range(len(task)):
+        if task[i] in tarefas:
+            date = tarefas[task[i]][0]
+            tarefas[task[i]] = [date, True]
+            adicionar_Tarefa(tarefas)
+    exibir_Lista(tarefas,False)
+
+def unchecked_Tarefa_W(comando):
+    tarefa = ""
+    while tarefa != "done":
+        tarefa = input(f"{Back.GREEN}Digite a tarefa que deseja desmarcar como concluida:{Style.RESET_ALL} {Fore.GREEN}").lower()
+        if tarefa == "done":
+            break
+        unchecked_Tarefa(["check",tarefa])
 
 def clear_Terminal():
     if platform.system() == 'Linux' or platform.system() == 'Darwin':
