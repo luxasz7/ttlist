@@ -106,7 +106,7 @@ def add_Tarefa(comando):
         else:   
             tarefa = task[i]
             date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
-            tarefas[tarefa] = [date,True]
+            tarefas[tarefa] = [date,True, ""]
     adicionar_Tarefa(tarefas)
     exibir_Lista(tarefas, False)
 
@@ -115,7 +115,17 @@ def add_Tarefa_W():
 
     while tarefa != "done":
         tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() #+ "\n"
+        if tarefa == "done":
+            break
         add_Tarefa(["add",tarefa])
+        if tarefa in tarefas: 
+            desc_ask = input(f"{Back.GREEN}Deseja adicionar alguma descrição na tarefa? Y/N{Style.RESET_ALL} {Fore.GREEN}").lower()
+            if desc_ask == 'y':
+                desc = input(f"{Back.GREEN}Digite a descrição:{Style.RESET_ALL} {Fore.GREEN}")
+                tarefas[tarefa][2] = desc
+                adicionar_Tarefa(tarefas)
+            else:
+                continue
         # while (tarefa == "add" or tarefa == "remove" or tarefa == "check" or tarefa == "exit" or tarefa == "ls" or tarefa == "clear") or len(tarefa.split()) > 1 or len(tarefa) >= 35:
         #     print(f"{Fore.RED}\n{tarefa.strip()} é um valor invalido. Digite outro nome para a tarefa. {Style.RESET_ALL}\n")
         #     tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() #+ "\n"
@@ -185,12 +195,19 @@ def editar_Tarefa(tarefas,t ):
 
     if tarefa in tarefas:
         new_Tarefa = input(f"{Back.GREEN}Digite as alterações:{Style.RESET_ALL} {Fore.GREEN}").lower()
-        date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
-        tarefas[new_Tarefa] = [date,True]
+        if new_Tarefa != "done":
+            date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
 
-        del tarefas[tarefa]
-        adicionar_Tarefa(tarefas)
-        exibir_Lista(tarefas, False)
+            desc_ask = input(f"{Back.GREEN}Deseja adicionar alguma descrição na tarefa? Y/N{Style.RESET_ALL} {Fore.GREEN}").lower()
+            if desc_ask == 'y':
+                desc = input(f"{Back.GREEN}Digite a descrição:{Style.RESET_ALL} {Fore.GREEN}")
+            else:
+                desc = ""
+            tarefas[new_Tarefa] = [date,True, desc]
+
+            del tarefas[tarefa]
+            adicionar_Tarefa(tarefas)
+            exibir_Lista(tarefas, False)
     else:
         print(f"{Fore.RED}{tarefa} não está presente na lista de tarefas. Impossível Editar.{Style.RESET_ALL}")
     
@@ -262,7 +279,7 @@ def status(x):
         elif not valor[1]:
             concluidas += 1
     if not x:
-        print(f"{Style.RESET_ALL}{Fore.CYAN}Total de tarefas: {len(tarefas)}\n{Style.RESET_ALL}{Fore.YELLOW}Tarefas concluidas: {concluidas}\n{Style.RESET_ALL}{Fore.MAGENTA}Tarefas não concluidas {n_concluidas}")
+        print(f"{Style.RESET_ALL}{Fore.CYAN}Total de tarefas: {len(tarefas)}\n{Style.RESET_ALL}{Fore.YELLOW}Tarefas concluidas: {concluidas}\n{Style.RESET_ALL}{Fore.MAGENTA}Tarefas não concluidas {n_concluidas}\n")
     elif x:
         concluidas = (concluidas * 100) / len(tarefas)
         n_concluidas = (n_concluidas * 100 / len(tarefas))
@@ -275,7 +292,7 @@ def grep(comando):
             status = "Ativo"
         else:
             status = "Já concluido"
-        print(f"{comando} está presente em sua lista\nData de adição: {tarefas[comando][0].rstrip()}\nStatus: {status}")
+        print(f"{Style.RESET_ALL}{Fore.CYAN}{comando} está presente em sua lista\n{Style.RESET_ALL}{Fore.YELLOW}Data de adição: {tarefas[comando][0].rstrip()}\n{Style.RESET_ALL}{Fore.MAGENTA}Status: {status}\nDescrição: {tarefas[comando][2]}")
 
 while(c != "exit"):
     print(f"{Back.GREEN}{Style.BRIGHT}TTLIST: ")
