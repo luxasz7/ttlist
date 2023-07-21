@@ -6,30 +6,15 @@ import json
 import subprocess
 import platform
 
-# arquivo = open('arquivo.txt','r')
-# arquivo_Tam = len(arquivo.readlines())
-# arquivo.close()
-
 with open('arquivo.json','r') as arquivo:
     arquivo = json.load(arquivo)
 
 c = ""
 tarefas = arquivo
-#datas = []
-
-# def preencher_Tarefas_Arquivo(x, arquivo_Tam, y):
-#     arquivo = open(y,'r')
-#     for i in range(arquivo_Tam):
-#         valor = arquivo.readline()
-#         x.append(valor)
-#     arquivo.close()
 
 def adicionar_Tarefa(tarefas):    
     with open('arquivo.json','w') as arquivo:
         json.dump(tarefas, arquivo)
-
-# preencher_Tarefas_Arquivo(tarefas, arquivo_Tam, "arquivo.txt")
-# preencher_Tarefas_Arquivo(datas, arquivo_Tam, "data.txt")
 
 def exec_Comando(c):
     comando = c.split()
@@ -93,13 +78,14 @@ def exec_Comando(c):
                 print(Fore.RED + "Comando inválido, digite \"help\" para ver a lista de comandos\n")
         case other:
             print(Fore.RED + "Comando inválido, digite \"help\" para ver a lista de comandos\n")
-###ADD###
+
 def add_Tarefa(comando):
     task = comando
     task.remove(comando[0])
-    
+    execoes = ["add","remove","check","uncheck","exit","done","ls","done","clear","grep","status","edit","exit","help"]
+
     for i in range(len(task)):
-        if task[i] == "add" or task[i] == "remove" or task[i] == "check" or task[i] == "exit" or task[i] == "done" or task[i] == "ls" or task[i] == "done" or task[i] == "clear": 
+        if task[i] in execoes: 
             print(Fore.RED + f"{task[i]} é um valor invalido.")
         elif task[i] in tarefas:
             print(Fore.RED + f"{task[i]} já existe na lista impossível adicionar.")
@@ -114,36 +100,19 @@ def add_Tarefa_W():
     tarefa = ""
 
     while tarefa != "done":
-        tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() #+ "\n"
+        tarefa = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower()
         if tarefa == "done":
             break
         add_Tarefa(["add",tarefa])
         if tarefa in tarefas: 
-            desc_ask = input(f"{Back.GREEN}Deseja adicionar alguma descrição na tarefa? Y/N{Style.RESET_ALL} {Fore.GREEN}").lower()
+            desc_ask = input(f"{Style.RESET_ALL}{Back.GREEN}Deseja adicionar alguma descrição na tarefa? Y/N{Style.RESET_ALL} {Fore.GREEN}").lower()
             if desc_ask == 'y':
-                desc = input(f"{Back.GREEN}Digite a descrição:{Style.RESET_ALL} {Fore.GREEN}")
+                desc = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a descrição:{Style.RESET_ALL} {Fore.GREEN}")
                 tarefas[tarefa][2] = desc
                 adicionar_Tarefa(tarefas)
             else:
                 continue
-        # while (tarefa == "add" or tarefa == "remove" or tarefa == "check" or tarefa == "exit" or tarefa == "ls" or tarefa == "clear") or len(tarefa.split()) > 1 or len(tarefa) >= 35:
-        #     print(f"{Fore.RED}\n{tarefa.strip()} é um valor invalido. Digite outro nome para a tarefa. {Style.RESET_ALL}\n")
-        #     tarefa = input(f"{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower() #+ "\n"
 
-        # if tarefa in tarefas:
-        #     print(f"\n{Fore.RED}{tarefa.strip()} já existe em sua lista. {Style.RESET_ALL}\n")
-        # elif tarefa == "done":
-        #      break
-        # else:
-        #     date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
-        #     tarefas[tarefa] = date
-    #adicionar_Tarefa(tarefas)
-    # adicionar_Tarefa(datas, "data.txt")
-    #exibir_Lista(tarefas, False)
-#######
-
-
-###REMOVE####
 def remove_Tarefa(comando):
     task = comando
     task.remove(comando[0])
@@ -163,27 +132,6 @@ def remove_Tarefa_W():
     while tarefa != "done":
         tarefa = input(f"{Back.RED} Digite a tarefa que deseja remover:{Style.RESET_ALL} {Fore.RED}").lower()
         remove_Tarefa(["remove",tarefa])
-    #     if tarefa in tarefas:
-    #         del tarefas[tarefa]
-    #     elif tarefa == "done":
-    #         break
-    #     else:
-    #         print(f"\n{Fore.RED}{tarefa.strip()} não está em sua lista. Impossível remover.{Style.RESET_ALL}")
-    # adicionar_Tarefa(tarefas)
-    # exibir_Lista(tarefas, False)
-######
-
-def exibir_Lista(tarefas, x):
-    for chave, valor in tarefas.items():
-        if valor[1]:
-            chave = Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL
-            pontos = Style.BRIGHT + Fore.YELLOW + gerar_Pontos(chave) + Style.RESET_ALL
-            data = Style.BRIGHT+ Fore.BLUE + formatar_Data(x, valor[0]) + Style.RESET_ALL
-        elif not valor[1]:
-            chave = Style.BRIGHT + Fore.BLACK + chave + Style.RESET_ALL
-            pontos = Style.BRIGHT + Fore.BLACK + gerar_Pontos(chave) + Style.RESET_ALL
-            data = Style.BRIGHT+ Fore.BLACK + formatar_Data(x, valor[0]) + Style.RESET_ALL
-        print(f"{chave}{pontos}{data}", end="")
 
 def editar_Tarefa(tarefas,t ):
     exibir_Lista(tarefas, True)
@@ -210,7 +158,7 @@ def editar_Tarefa(tarefas,t ):
             exibir_Lista(tarefas, False)
     else:
         print(f"{Fore.RED}{tarefa} não está presente na lista de tarefas. Impossível Editar.{Style.RESET_ALL}")
-    
+
 def checked_Tarefa(comando):
     task = comando
     task.remove(comando[0])
@@ -251,25 +199,6 @@ def unchecked_Tarefa_W(comando):
             break
         unchecked_Tarefa(["check",tarefa])
 
-def clear_Terminal():
-    if platform.system() == 'Linux' or platform.system() == 'Darwin':
-        subprocess.call('clear', shell=True)
-    elif platform.system() == 'Windows':
-        subprocess.call('cls', shell=True)
-
-def formatar_Data(x,valor):
-    if x:
-        return valor[0:16] + "\n"
-    else: 
-        return valor[0:10] + "\n"
-
-def gerar_Pontos(x):
-    y = 40 - len(x)
-    pts = ""
-    for i in range(y):
-        pts +=  "."
-    return pts
-
 def status(x):
     concluidas = 0
     n_concluidas = 0
@@ -292,7 +221,38 @@ def grep(comando):
             status = "Ativo"
         else:
             status = "Já concluido"
-        print(f"{Style.RESET_ALL}{Fore.CYAN}{comando} está presente em sua lista\n{Style.RESET_ALL}{Fore.YELLOW}Data de adição: {tarefas[comando][0].rstrip()}\n{Style.RESET_ALL}{Fore.MAGENTA}Status: {status}\nDescrição: {tarefas[comando][2]}")
+        print(f"{Style.RESET_ALL}{Fore.CYAN}{comando} está presente em sua lista\n{Style.RESET_ALL}{Fore.YELLOW}Data de adição: {tarefas[comando][0].rstrip()}\n{Style.RESET_ALL}{Fore.MAGENTA}Status: {status}\n{Fore.GREEN}Descrição: {tarefas[comando][2]}")
+
+def exibir_Lista(tarefas, x):
+    for chave, valor in tarefas.items():
+        if valor[1]:
+            chave = Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL
+            pontos = Style.BRIGHT + Fore.YELLOW + gerar_Pontos(chave) + Style.RESET_ALL
+            data = Style.BRIGHT+ Fore.BLUE + formatar_Data(x, valor[0]) + Style.RESET_ALL
+        elif not valor[1]:
+            chave = Style.BRIGHT + Fore.BLACK + chave + Style.RESET_ALL
+            pontos = Style.BRIGHT + Fore.BLACK + gerar_Pontos(chave) + Style.RESET_ALL
+            data = Style.BRIGHT+ Fore.BLACK + formatar_Data(x, valor[0]) + Style.RESET_ALL
+        print(f"{chave}{pontos}{data}", end="")
+    
+def clear_Terminal():
+    if platform.system() == 'Linux' or platform.system() == 'Darwin':
+        subprocess.call('clear', shell=True)
+    elif platform.system() == 'Windows':
+        subprocess.call('cls', shell=True)
+
+def formatar_Data(x,valor):
+    if x:
+        return valor[0:16] + "\n"
+    else: 
+        return valor[0:10] + "\n"
+
+def gerar_Pontos(x):
+    y = 40 - len(x)
+    pts = ""
+    for i in range(y):
+        pts +=  "."
+    return pts
 
 while(c != "exit"):
     print(f"{Back.GREEN}{Style.BRIGHT}TTLIST: ")
