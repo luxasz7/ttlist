@@ -79,6 +79,18 @@ def exec_Comando(c):
                 editar_Tarefa(tarefas,comando[1])
             elif len(comando) > 2:
                 print(f"{Fore.RED}Comando invalido. Você só pode editar um item por vez.")
+        case "status":
+            if len(comando) == 1:
+                status(False)
+            elif len(comando) > 1 and comando[1] == 'p':
+                status(True)
+            elif len(comando) > 1 and comando[1] != 'p':
+                print(Fore.RED + "Comando inválido, digite \"help\" para ver a lista de comandos\n")
+        case "grep":
+            if len(comando) == 2:
+                grep(comando[1])
+            elif len(comando) > 2:
+                print(Fore.RED + "Comando inválido, digite \"help\" para ver a lista de comandos\n")
         case other:
             print(Fore.RED + "Comando inválido, digite \"help\" para ver a lista de comandos\n")
 ###ADD###
@@ -197,7 +209,7 @@ def checked_Tarefa(comando):
 def checked_Tarefa_W(comando):
     tarefa = ""
     while tarefa != "done":
-        tarefa = input(f"{Back.GREEN}Digite a tarefa que deseja marcar como concluida:{Style.RESET_ALL} {Fore.GREEN}").lower()
+        tarefa = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a tarefa que deseja marcar como concluida:{Style.RESET_ALL} {Fore.GREEN}").lower()
         if tarefa == "done":
             break
         checked_Tarefa(["check",tarefa])
@@ -210,12 +222,14 @@ def unchecked_Tarefa(comando):
             date = tarefas[task[i]][0]
             tarefas[task[i]] = [date, True]
             adicionar_Tarefa(tarefas)
+        else:
+            print(f"{Fore.RED}{task[i]} não está presente na lista de tarefas. Impossível desmarcar como concluido. {Style.RESET_ALL}")
     exibir_Lista(tarefas,False)
 
 def unchecked_Tarefa_W(comando):
     tarefa = ""
     while tarefa != "done":
-        tarefa = input(f"{Back.GREEN}Digite a tarefa que deseja desmarcar como concluida:{Style.RESET_ALL} {Fore.GREEN}").lower()
+        tarefa = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a tarefa que deseja desmarcar como concluida:{Style.RESET_ALL} {Fore.GREEN}").lower()
         if tarefa == "done":
             break
         unchecked_Tarefa(["check",tarefa])
@@ -238,6 +252,30 @@ def gerar_Pontos(x):
     for i in range(y):
         pts +=  "."
     return pts
+
+def status(x):
+    concluidas = 0
+    n_concluidas = 0
+    for chave, valor in tarefas.items():
+        if valor[1]:
+            n_concluidas += 1
+        elif not valor[1]:
+            concluidas += 1
+    if not x:
+        print(f"{Style.RESET_ALL}{Fore.CYAN}Total de tarefas: {len(tarefas)}\n{Style.RESET_ALL}{Fore.YELLOW}Tarefas concluidas: {concluidas}\n{Style.RESET_ALL}{Fore.MAGENTA}Tarefas não concluidas {n_concluidas}")
+    elif x:
+        concluidas = (concluidas * 100) / len(tarefas)
+        n_concluidas = (n_concluidas * 100 / len(tarefas))
+
+        print(f"{Style.RESET_ALL}{Fore.CYAN}Total de tarefas: {len(tarefas)}\n{Style.RESET_ALL}{Fore.YELLOW}Tarefas concluidas: {concluidas}%\n{Style.RESET_ALL}{Fore.MAGENTA}Tarefas não concluidas {n_concluidas}%")
+
+def grep(comando):
+    if comando in tarefas:
+        if tarefas[comando][1] == True:
+            status = "Ativo"
+        else:
+            status = "Já concluido"
+        print(f"{comando} está presente em sua lista\nData de adição: {tarefas[comando][0].rstrip()}\nStatus: {status}")
 
 while(c != "exit"):
     print(f"{Back.GREEN}{Style.BRIGHT}TTLIST: ")
