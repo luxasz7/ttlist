@@ -146,9 +146,9 @@ def editar_Tarefa(tarefas,t ):
         if new_Tarefa != "done":
             date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
 
-            desc_ask = input(f"{Back.GREEN}Deseja adicionar alguma descrição na tarefa? Y/N{Style.RESET_ALL} {Fore.GREEN}").lower()
+            desc_ask = input(f"{Style.RESET_ALL}{Back.GREEN}Deseja adicionar alguma descrição na tarefa? Y/N{Style.RESET_ALL} {Fore.GREEN}").lower()
             if desc_ask == 'y':
-                desc = input(f"{Back.GREEN}Digite a descrição:{Style.RESET_ALL} {Fore.GREEN}")
+                desc = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a descrição:{Style.RESET_ALL} {Fore.GREEN}")
             else:
                 desc = ""
             tarefas[new_Tarefa] = [date,True, desc]
