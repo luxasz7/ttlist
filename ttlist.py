@@ -3,8 +3,7 @@ import colorama
 from colorama import init, Fore, Back, Style
 colorama.init(autoreset=True)
 import json
-import subprocess
-import platform
+import os
 
 with open('arquivo.json','r') as arquivo:
     arquivo = json.load(arquivo)
@@ -140,24 +139,28 @@ def editar_Tarefa(tarefas,t ):
             tarefa = input(f"{Back.GREEN}Digite a tarefa que deseja editar:{Style.RESET_ALL} {Fore.GREEN}").lower()
     else:
         tarefa = t
+    if tarefa != "done":
+        if tarefa in tarefas:
+            new_Tarefa = input(f"{Back.GREEN}Digite as alterações:{Style.RESET_ALL} {Fore.GREEN}").lower()
 
-    if tarefa in tarefas:
-        new_Tarefa = input(f"{Back.GREEN}Digite as alterações:{Style.RESET_ALL} {Fore.GREEN}").lower()
-        if new_Tarefa != "done":
-            date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
+            while len(new_Tarefa) > 38:
+                new_Tarefa = input(f"{Back.GREEN}A tarefa excede o número de caracteres. Digite as alterações novamente:{Style.RESET_ALL} {Fore.GREEN}").lower()
+            if new_Tarefa != "done":
+                date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
 
-            desc_ask = input(f"{Style.RESET_ALL}{Back.GREEN}Deseja adicionar alguma descrição na tarefa? Y/N{Style.RESET_ALL} {Fore.GREEN}").lower()
-            if desc_ask == 'y':
-                desc = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a descrição:{Style.RESET_ALL} {Fore.GREEN}")
-            else:
-                desc = ""
-            tarefas[new_Tarefa] = [date,True, desc]
+                desc_ask = input(f"{Style.RESET_ALL}{Back.GREEN}Deseja adicionar alguma descrição na tarefa? Y/N{Style.RESET_ALL} {Fore.GREEN}").lower()
+                if desc_ask == 'y':
+                    desc = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a descrição:{Style.RESET_ALL} {Fore.GREEN}")
+                else:
+                    desc = ""
+                    
+                del tarefas[tarefa]
+                tarefas[new_Tarefa] = [date,True, desc]
 
-            del tarefas[tarefa]
-            adicionar_Tarefa(tarefas)
-            exibir_Lista(tarefas, False)
-    else:
-        print(f"{Fore.RED}{tarefa} não está presente na lista de tarefas. Impossível Editar.{Style.RESET_ALL}")
+                adicionar_Tarefa(tarefas)
+                exibir_Lista(tarefas, False)
+        else:
+            print(f"{Fore.RED}{tarefa} não está presente na lista de tarefas. Impossível Editar.{Style.RESET_ALL}")
 
 def checked_Tarefa(comando):
     task = comando
@@ -210,8 +213,8 @@ def status(x):
     if not x:
         print(f"{Style.RESET_ALL}{Fore.CYAN}Total de tarefas: {len(tarefas)}\n{Style.RESET_ALL}{Fore.YELLOW}Tarefas concluidas: {concluidas}\n{Style.RESET_ALL}{Fore.MAGENTA}Tarefas não concluidas {n_concluidas}\n")
     elif x:
-        concluidas = (concluidas * 100) / len(tarefas)
-        n_concluidas = (n_concluidas * 100 / len(tarefas))
+        concluidas = round((concluidas * 100) / len(tarefas))
+        n_concluidas = round((n_concluidas * 100 / len(tarefas)))
 
         print(f"{Style.RESET_ALL}{Fore.CYAN}Total de tarefas: {len(tarefas)}\n{Style.RESET_ALL}{Fore.YELLOW}Tarefas concluidas: {concluidas}%\n{Style.RESET_ALL}{Fore.MAGENTA}Tarefas não concluidas {n_concluidas}%")
 
@@ -224,6 +227,8 @@ def grep(comando):
         print(f"{Style.RESET_ALL}{Fore.CYAN}{comando} está presente em sua lista\n{Style.RESET_ALL}{Fore.YELLOW}Data de adição: {tarefas[comando][0].rstrip()}\n{Style.RESET_ALL}{Fore.MAGENTA}Status: {status}\n{Fore.GREEN}Descrição: {tarefas[comando][2]}")
 
 def exibir_Lista(tarefas, x):
+    clear_Terminal()
+    print(f"{Back.GREEN}{Style.BRIGHT}{Fore.WHITE}TTLIST: ")
     for chave, valor in tarefas.items():
         if valor[1]:
             chave = Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL
@@ -236,10 +241,7 @@ def exibir_Lista(tarefas, x):
         print(f"{chave}{pontos}{data}", end="")
     
 def clear_Terminal():
-    if platform.system() == 'Linux' or platform.system() == 'Darwin':
-        subprocess.call('clear', shell=True)
-    elif platform.system() == 'Windows':
-        subprocess.call('cls', shell=True)
+    os.system("clear")
 
 def formatar_Data(x,valor):
     if x:
@@ -253,9 +255,12 @@ def gerar_Pontos(x):
     for i in range(y):
         pts +=  "."
     return pts
+clear_Terminal()
 
-while(c != "exit"):
-    print(f"{Back.GREEN}{Style.BRIGHT}TTLIST: ")
+while True:
+    print(f"{Back.GREEN}{Style.BRIGHT}{Fore.WHITE}TTLIST: ")
     c = input(Fore.GREEN + ">").lower()
     Style.RESET_ALL
     exec_Comando(c)
+    if c == "exit":
+        break
