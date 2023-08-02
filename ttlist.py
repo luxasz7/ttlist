@@ -3,7 +3,8 @@ import colorama
 from colorama import init, Fore, Back, Style
 colorama.init(autoreset=True)
 import json
-import os
+import subprocess
+import platform
 
 with open('arquivo.json','r') as arquivo:
     arquivo = json.load(arquivo)
@@ -46,7 +47,7 @@ def exec_Comando(c):
         case "help":
             print(f"{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}add - Adiciona uma nova terafa{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}remove - Remove um tarefa{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}check - Marca uma tarefa com concluída{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}ls - Lista as terafas{Style.RESET_ALL}\n{Back.LIGHTBLUE_EX}ls -h - Lista as tarefas exibindo seu horário de criação{Style.RESET_ALL}\n{Back.LIGHTMAGENTA_EX}--------------------------------------{Style.RESET_ALL}")
         case "exit":
-            print(f"{Back.LIGHTMAGENTA_EX}Saindo...")
+            print(f"{Fore.LIGHTMAGENTA_EX}Saindo")
         case "ls":
             if len(comando) == 1:
                 exibir_Lista(tarefas,False)
@@ -93,6 +94,7 @@ def add_Tarefa(comando):
             date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
             tarefas[tarefa] = [date,True, ""]
     adicionar_Tarefa(tarefas)
+    clear_Terminal()
     exibir_Lista(tarefas, False)
 
 def add_Tarefa_W():
@@ -100,6 +102,8 @@ def add_Tarefa_W():
 
     while tarefa != "done":
         tarefa = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a tarefa:{Style.RESET_ALL} {Fore.GREEN}").lower()
+        clear_Terminal()
+        exibir_Lista(tarefas, False)
         if tarefa == "done":
             break
         add_Tarefa(["add",tarefa])
@@ -109,7 +113,11 @@ def add_Tarefa_W():
                 desc = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a descrição:{Style.RESET_ALL} {Fore.GREEN}")
                 tarefas[tarefa][2] = desc
                 adicionar_Tarefa(tarefas)
+                clear_Terminal()
+                exibir_Lista(tarefas, False)
             else:
+                clear_Terminal()
+                exibir_Lista(tarefas, False)
                 continue
 
 def remove_Tarefa(comando):
@@ -117,19 +125,20 @@ def remove_Tarefa(comando):
     task.remove(comando[0])
 
     for i in range(len(task)):
-        if (task[i]) in tarefas:
+        if task[i] in tarefas:
             del tarefas[task[i]]
         elif task[i] == "done":
             continue 
-        else:
+        elif task[i] not in tarefas:
             print(f"{Fore.RED}{task[i]} não está presente na lista de tarefas. Impossível remover. {Style.RESET_ALL}")
     adicionar_Tarefa(tarefas)
     exibir_Lista(tarefas, False)
 
 def remove_Tarefa_W():
     tarefa = ""
+    exibir_Lista(tarefas, False)
     while tarefa != "done":
-        tarefa = input(f"{Back.RED} Digite a tarefa que deseja remover:{Style.RESET_ALL} {Fore.RED}").lower()
+        tarefa = input(f"{Back.RED}{Fore.WHITE}Digite a tarefa que deseja remover:{Style.RESET_ALL} {Fore.RED}").lower()
         remove_Tarefa(["remove",tarefa])
 
 def editar_Tarefa(tarefas,t ):
@@ -203,6 +212,8 @@ def unchecked_Tarefa_W(comando):
         unchecked_Tarefa(["check",tarefa])
 
 def status(x):
+    exibir_Lista(tarefas, False)
+    print("\n")
     concluidas = 0
     n_concluidas = 0
     for chave, valor in tarefas.items():
@@ -241,7 +252,10 @@ def exibir_Lista(tarefas, x):
         print(f"{chave}{pontos}{data}", end="")
     
 def clear_Terminal():
-    os.system("clear")
+    if platform.system() == 'Linux' or platform.system() == 'Darwin':
+        subprocess.call('clear', shell=True)
+    elif platform.system() == 'Windows':
+        subprocess.call('cls', shell=True)
 
 def formatar_Data(x,valor):
     if x:
