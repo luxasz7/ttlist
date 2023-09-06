@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 
 class Lista_Tarefas:
     def __init__(self):
@@ -13,3 +14,5 @@ class Lista_Tarefas:
     def dic_tarefas(self, tarefas):
         self.tarefas = tarefas
         self.adicionar(tarefas)
+
+df = pd.DataFrame(data = Lista_Tarefas().tarefas)

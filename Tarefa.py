@@ -13,15 +13,15 @@ class Tarefa(Commands):
         task.remove(comando[0])
         execoes = ["add","remove","check","uncheck","exit","done","ls","done","clear","grep","status","edit","exit","help"]
 
-        for i in range(len(task)):
-            if task[i] in execoes: 
-                print(Fore.RED + f"{task[i]} é um valor invalido.")
-            elif task[i] in self.lista_tarefas.tarefas:
-                print(Fore.RED + f"{task[i]} já existe na lista impossível adicionar.")
+        for i in task:
+            if i in execoes: 
+                print(Fore.RED + f"{i} é um valor invalido.")
+            elif i in self.lista_tarefas.tarefas:
+                print(Fore.RED + f"{i} já existe na lista impossível adicionar.")
             else:   
-                tarefa = task[i]
+                tarefa = i
                 date = datetime.now().strftime("%Y-%m-%d %H:%M\n")
-                self.lista_tarefas.tarefas[tarefa] = [date,True, ""]
+                self.lista_tarefas.tarefas[tarefa] = [tarefa,date,True, ""]
         self.lista_tarefas.dic_tarefas(self.lista_tarefas.tarefas)
         self.clear()
         self.ls(False)
@@ -62,13 +62,13 @@ class Tarefa(Commands):
         task = comando
         task.remove(comando[0])
 
-        for i in range(len(task)):
-            if task[i] in self.lista_tarefas.tarefas:
-                del self.lista_tarefas.tarefas[task[i]]
-            elif task[i] == "done":
+        for i in task:
+            if i in self.lista_tarefas.tarefas:
+                del self.lista_tarefas.tarefas[i]
+            elif i == "done":
                 continue 
-            elif task[i] not in self.lista_tarefas.tarefas:
-                print(f"{Fore.RED}{task[i]} não está presente na lista de tarefas. Impossível remover. {Style.RESET_ALL}")
+            elif i not in self.lista_tarefas.tarefas:
+                print(f"{Fore.RED}{i} não está presente na lista de tarefas. Impossível remover. {Style.RESET_ALL}")
         self.lista_tarefas.dic_tarefas(self.lista_tarefas.tarefas)
         self.clear()
         self.ls(False)
@@ -105,7 +105,7 @@ class Tarefa(Commands):
                         desc = ""
                         
                     del self.lista_tarefas.tarefas[tarefa]
-                    self.lista_tarefas.tarefas[new_Tarefa] = [date, True, desc]
+                    self.lista_tarefas.tarefas[new_Tarefa] = [new_Tarefa, date, True, desc]
 
                     self.lista_tarefas.dic_tarefas(self.lista_tarefas.tarefas)
                     self.ls(False)
@@ -118,14 +118,14 @@ class Tarefa(Commands):
         #comando = comando.split()
         task = comando
         task.remove(comando[0])
-        for i in range(len(task)):
-            if task[i] in self.lista_tarefas.tarefas:
-                date = self.lista_tarefas.tarefas[task[i]][0]
-                desc = self.lista_tarefas.tarefas[task[i]][0]
-                self.lista_tarefas.tarefas[task[i]] = [date, False, desc]
+        for i in task:
+            if i in self.lista_tarefas.tarefas:
+                date = self.lista_tarefas.tarefas[i][1]
+                desc = self.lista_tarefas.tarefas[i][2]
+                self.lista_tarefas.tarefas[i] = [i,date, False, desc]
                 self.lista_tarefas.dic_tarefas(self.lista_tarefas.tarefas)
             else:
-                print(f"{Fore.RED}{task[i]} não está presente na lista de tarefas. Impossível marcar como concluido. {Style.RESET_ALL}")
+                print(f"{Fore.RED}{i} não está presente na lista de tarefas. Impossível marcar como concluido. {Style.RESET_ALL}")
         #exibir_Lista(tarefas, False)
         self.clear()
         self.ls(False)
@@ -143,13 +143,13 @@ class Tarefa(Commands):
         #comando = comando.split()
         task = comando
         task.remove(comando[0])
-        for i in range(len(task)):
-            if task[i] in self.lista_tarefas.tarefas:
-                date = self.lista_tarefas.tarefas[task[i]][0]
-                self.lista_tarefas.tarefas[task[i]] = [date, True, ""]
+        for i in task:
+            if i in self.lista_tarefas.tarefas:
+                date = self.lista_tarefas.tarefas[i][1]
+                self.lista_tarefas.tarefas[i] = [i,date, True, ""]
                 self.lista_tarefas.dic_tarefas(self.lista_tarefas.tarefas)
             else:
-                print(f"{Fore.RED}{task[i]} não está presente na lista de tarefas. Impossível desmarcar como concluido. {Style.RESET_ALL}")
+                print(f"{Fore.RED}{i} não está presente na lista de tarefas. Impossível desmarcar como concluido. {Style.RESET_ALL}")
         #exibir_Lista(tarefas,False)
         self.clear()
         self.ls(False)

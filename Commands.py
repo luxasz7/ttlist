@@ -21,14 +21,14 @@ class Commands:
         if len(self.lista_tarefas.tarefas) > 0:
             print(f"{Back.GREEN}{Style.BRIGHT}{Fore.WHITE}TTLIST: ")
             for chave, valor in self.lista_tarefas.tarefas.items():
-                if valor[1]:
+                if valor[2]:
                     chave = Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL
                     pontos = Style.BRIGHT + Fore.YELLOW + self.gerar_Pontos(chave) + Style.RESET_ALL
-                    data = Style.BRIGHT+ Fore.BLUE + self.formatar_Data(x, valor[0]) + Style.RESET_ALL
-                elif not valor[1]:
-                    chave = Style.BRIGHT + Fore.BLACK + chave + Style.RESET_ALL
+                    data = Style.BRIGHT+ Fore.BLUE + self.formatar_Data(x, valor[1]) + Style.RESET_ALL
+                elif not valor[2]:
+                    chave = Style.BRIGHT + Fore.BLACK + valor[0] + Style.RESET_ALL
                     pontos = Style.BRIGHT + Fore.BLACK + self.gerar_Pontos(chave) + Style.RESET_ALL
-                    data = Style.BRIGHT+ Fore.BLACK + self.formatar_Data(x, valor[0]) + Style.RESET_ALL
+                    data = Style.BRIGHT+ Fore.BLACK + self.formatar_Data(x, valor[1]) + Style.RESET_ALL
                 print(f"{chave}{pontos}{data}", end="")
 
     def formatar_Data(self,x,valor):
