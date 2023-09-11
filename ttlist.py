@@ -87,7 +87,7 @@ while True:
     c = input(Fore.GREEN + ">").lower()
 
     while c == "":
-        c = "."
+         c = "."
         
     Style.RESET_ALL   
     exec_Comando(c)

@@ -24,17 +24,17 @@ class Tarefa(Commands):
                 self.lista_tarefas.tarefas[tarefa] = [tarefa,date,True, ""]
         self.lista_tarefas.dic_tarefas(self.lista_tarefas.tarefas)
         self.clear()
-        self.ls(False)
+        Commands.ls(self,False)
         # clear_Terminal()
         # exibir_Lista(tarefas, False)
 
     def new_task_w(self):
-        self.ls(False)
+        Commands.ls(self,False)
         tarefa = ""
 
         while tarefa != "done":
             tarefa = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a tarefa:{Style.RESET_ALL}{Fore.GREEN}").lower()
-            self.ls(False)
+            Commands.ls(self,False)
 
             if tarefa == "done":
                 break
@@ -52,9 +52,9 @@ class Tarefa(Commands):
                     self.lista_tarefas.tarefas[tarefa][2] = desc
                     self.new_task(["add",tarefa])
 
-                    self.ls(False)
+                    Commands.ls(self,False)
                 else:
-                    self.ls(False)
+                    Commands.ls(self,False)
                     continue
 
     def remove_task(self, comando):
@@ -71,19 +71,19 @@ class Tarefa(Commands):
                 print(f"{Fore.RED}{i} não está presente na lista de tarefas. Impossível remover. {Style.RESET_ALL}")
         self.lista_tarefas.dic_tarefas(self.lista_tarefas.tarefas)
         self.clear()
-        self.ls(False)
+        Commands.ls(self,False)
         #exibir_Lista(tarefas, False)
 
     def remove_task_w(self):
-        self.ls(False)
+        Commands.ls(self,False)
         tarefa = ""
-        self.ls(False)
+        Commands.ls(self,False)
         while tarefa != "done":
             tarefa = input(f"{Back.RED}{Fore.WHITE}Digite a tarefa que deseja remover:{Style.RESET_ALL} {Fore.RED}").lower()
             self.remove_task(["remove",tarefa])
 
     def edit_task(self, t):
-        self.ls(False)
+        Commands.ls(self,False)
 
         if t == "Null":
                 tarefa = input(f"{Style.RESET_ALL}{Back.GREEN}Digite a tarefa que deseja editar:{Style.RESET_ALL} {Fore.GREEN}").lower()
@@ -108,11 +108,11 @@ class Tarefa(Commands):
                     self.lista_tarefas.tarefas[new_Tarefa] = [new_Tarefa, date, True, desc]
 
                     self.lista_tarefas.dic_tarefas(self.lista_tarefas.tarefas)
-                    self.ls(False)
+                    Commands.ls(self,False)
             else:
                 print(f"{Fore.RED}{tarefa} não está presente na lista de tarefas. Impossível Editar.{Style.RESET_ALL}")
             self.clear()
-            self.ls(False)
+            Commands.ls(self,False)
 
     def check_task(self, comando):
         #comando = comando.split()
@@ -128,7 +128,7 @@ class Tarefa(Commands):
                 print(f"{Fore.RED}{i} não está presente na lista de tarefas. Impossível marcar como concluido. {Style.RESET_ALL}")
         #exibir_Lista(tarefas, False)
         self.clear()
-        self.ls(False)
+        Commands.ls(self,False)
 
     def check_task_w(self):
         tarefa = ""
@@ -137,7 +137,7 @@ class Tarefa(Commands):
             if tarefa == "done":
                 break
             self.check_task(["check",tarefa])
-        self.ls(False) 
+        Commands.ls(self,False)
 
     def uncheck_task(self, comando):
         #comando = comando.split()
@@ -152,7 +152,7 @@ class Tarefa(Commands):
                 print(f"{Fore.RED}{i} não está presente na lista de tarefas. Impossível desmarcar como concluido. {Style.RESET_ALL}")
         #exibir_Lista(tarefas,False)
         self.clear()
-        self.ls(False)
+        Commands.ls(self,False)
 
     def uncheck_task_w(self):
         tarefa = ""
@@ -162,4 +162,4 @@ class Tarefa(Commands):
                 break
             self.uncheck_task(["check",tarefa])
         self.clear()
-        self.ls(False)
+        Commands.ls(self,False)

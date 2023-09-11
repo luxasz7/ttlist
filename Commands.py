@@ -2,7 +2,9 @@ import colorama
 from colorama import init, Fore, Back, Style
 import subprocess
 import platform
+import pandas as pd
 
+from ls import ls_command
 
 class Commands:
     def __init__(self, Lista_Tarefas):
@@ -19,17 +21,7 @@ class Commands:
     def ls(self, x):
         self.clear()
         if len(self.lista_tarefas.tarefas) > 0:
-            print(f"{Back.GREEN}{Style.BRIGHT}{Fore.WHITE}TTLIST: ")
-            for chave, valor in self.lista_tarefas.tarefas.items():
-                if valor[2]:
-                    chave = Style.BRIGHT + Fore.MAGENTA + chave + Style.RESET_ALL
-                    pontos = Style.BRIGHT + Fore.YELLOW + self.gerar_Pontos(chave) + Style.RESET_ALL
-                    data = Style.BRIGHT+ Fore.BLUE + self.formatar_Data(x, valor[1]) + Style.RESET_ALL
-                elif not valor[2]:
-                    chave = Style.BRIGHT + Fore.BLACK + valor[0] + Style.RESET_ALL
-                    pontos = Style.BRIGHT + Fore.BLACK + self.gerar_Pontos(chave) + Style.RESET_ALL
-                    data = Style.BRIGHT+ Fore.BLACK + self.formatar_Data(x, valor[1]) + Style.RESET_ALL
-                print(f"{chave}{pontos}{data}", end="")
+            ls_command.ls(self.lista_tarefas, x)
 
     def formatar_Data(self,x,valor):
         if x:
